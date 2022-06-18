@@ -1,23 +1,12 @@
 const express = require('express');
 const cors = require('cors');
-require('dotenv/config')
-
+const cookieParser = require('cookie-parser');
 const app = express();
+const {connectDatabase} = require('./config/database');
+const user_router = require('./api/routes/user.routes');
+connectDatabase(app);
 
-app.use(express.json());
-app.use(express.urlencoded({extended:false}));
 app.use(cors());
-
-app.get('/', (req,res)=>{
-    return res.status(200).send({
-        status:'success',
-        data:{
-            message:"Finall API"
-        }
-    });
-});
-const PORT  = process.env.PORT || 3000;
-
-app.listen(PORT,()=>{
-    console.log(`Running on PORT ${PORT}`);
-})
+app.use(cookieParser());
+app.use(express.json());
+app.use('/api/v1/users', user_router);
